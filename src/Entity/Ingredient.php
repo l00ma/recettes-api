@@ -2,33 +2,53 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Entity\Traits\HasDescriptionTrait;
 use App\Entity\Traits\HasIdTrait;
 use App\Entity\Traits\HasNameTrait;
+use App\Entity\Traits\HasTimestampTrait;
 use App\Repository\IngredientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Patch(),
+        new Post(),
+        new Delete(),
+    ]
+)]
 class Ingredient
 {
     use HasIdTrait;
     use HasNameTrait;
     use HasDescriptionTrait;
-    use TimestampableEntity;
+    use HasTimestampTrait;
 
     #[ORM\Column]
+    #[Groups(['Recipe:item:get'])]
     private ?bool $vegan = false;
 
     #[ORM\Column]
+    #[Groups(['Recipe:item:get'])]
     private ?bool $vegetarian = true;
 
     #[ORM\Column]
+    #[Groups(['Recipe:item:get'])]
     private ?bool $dairyFree = false;
 
     #[ORM\Column]
+    #[Groups(['Recipe:item:get'])]
     private ?bool $glutenFree = false;
 
     #[ORM\OneToMany(mappedBy: 'ingredient', targetEntity: RecipeHasIngredient::class, orphanRemoval: true)]
